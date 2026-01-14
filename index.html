@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia do Fagner | Sistema Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <nav id="nav-sistema" class="hidden">
+        <div class="nav-content">
+            <span class="user-welcome"><i class="fa-solid fa-circle-user"></i> Olá, <strong id="user-nome"></strong></span>
+            <div class="nav-actions">
+                <button onclick="toggleConfiguracoes()" id="btn-config-nav" class="btn-icon-gold"><i class="fa-solid fa-gear"></i> Perfil</button>
+                <button onclick="logout()" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="logo-container">
+            <i class="fa-solid fa-scissors logo-icon"></i>
+            <h1>Barbearia do Fagner</h1>
+            <p class="subtitle">Estilo, Tradição e Gestão Profissional</p>
+        </div>
+    </header>
+
+    <section id="auth-screen" class="auth-container">
+        <div id="login-box" class="glass-card">
+            <h2>Login</h2>
+            <div class="input-field">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="login-email" placeholder="Seu e-mail">
+            </div>
+            <div class="input-field">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="login-senha" placeholder="Sua senha">
+            </div>
+            <button class="btn-primary" onclick="login()">Entrar no Sistema</button>
+            <p class="auth-footer">Não tem conta? <a href="#" onclick="toggleAuth()">Registre-se aqui</a></p>
+        </div>
+
+        <div id="register-box" class="glass-card hidden">
+            <h2>Criar Conta</h2>
+            <div class="form-grid">
+                <input type="text" id="reg-nome" placeholder="Nome Completo">
+                <input type="text" id="reg-tel" placeholder="WhatsApp (DDD)">
+                <input type="email" id="reg-email" placeholder="E-mail">
+                <input type="password" id="reg-senha" placeholder="Senha">
+                
+                <div class="full-width"><p class="section-divider">Dados de Localização</p></div>
+                <input type="text" id="reg-rua" placeholder="Rua e Nº">
+                <input type="text" id="reg-cidade" placeholder="Cidade">
+                <input type="text" id="reg-estado" placeholder="UF">
+                <input type="text" id="reg-cep" placeholder="CEP">
+            </div>
+            <button class="btn-primary" onclick="registrar()">Finalizar Cadastro</button>
+            <p class="auth-footer">Já é cadastrado? <a href="#" onclick="toggleAuth()">Fazer Login</a></p>
+        </div>
+    </section>
+
+    <main id="main-content" class="main-container hidden">
+        
+        <section class="card hidden danger-zone" id="section-configuracoes">
+            <div class="header-com-voltar">
+                <button onclick="toggleConfiguracoes()" class="btn-circle"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2>Meu Perfil</h2>
+            </div>
+            <div class="alerta-perigo">
+                <div class="alerta-titulo"><i class="fa-solid fa-triangle-exclamation"></i> Zona de Exclusão</div>
+                <p>Ao excluir sua conta, todos os dados serão removidos permanentemente.</p>
+            </div>
+            <button id="btn-deletar-conta" onclick="excluirContaUsuario()" class="btn-danger-outline">Excluir Conta Permanentemente</button>
+        </section>
+
+        <section class="card hidden" id="section-caixa">
+            <div class="admin-header">
+                <h2><i class="fa-solid fa-gauge-high"></i> Painel de Controle</h2>
+                <div class="total-badge">R$ <span id="total-valor">0,00</span></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fa-solid fa-calendar-day"></i>
+                    <span class="stat-label">Agendados Hoje</span>
+                    <strong id="stat-count-hoje">0</strong>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-users"></i>
+                    <span class="stat-label">Total Clientes</span>
+                    <strong id="stat-total-clientes">0</strong>
+                </div>
+            </div>
+
+            <div class="admin-tabs">
+                <button onclick="switchAdminTab('caixa')" class="tab-btn active" id="tab-caixa">Finanças</button>
+                <button onclick="switchAdminTab('clientes')" class="tab-btn" id="tab-clientes">Cadastrar Cliente</button>
+                <button onclick="switchAdminTab('barbeiros')" class="tab-btn" id="tab-barbeiros">Equipe</button>
+            </div>
+
+            <div id="admin-view-caixa" class="admin-subview">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="busca-admin" placeholder="Filtrar por nome ou serviço..." onkeyup="filtrarListaAdmin()">
+                </div>
+                <ul id="lista-admin" class="atendimento-lista"></ul>
+                <button onclick="limparFluxo()" class="btn-danger-minimal">Zerar Movimentação do Dia</button>
+            </div>
+
+            <div id="admin-view-clientes" class="admin-subview hidden">
+                <div class="form-container-admin">
+                    <h3>Novo Cliente Presencial</h3>
+                    <div class="form-grid-mini">
+                        <input type="text" id="adm-c-nome" placeholder="Nome do Cliente">
+                        <input type="text" id="adm-c-tel" placeholder="WhatsApp">
+                        <input type="email" id="adm-c-email" placeholder="E-mail (opcional)">
+                        <button onclick="adminCadastrarCliente()" class="btn-primary-mini">Salvar Cliente</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="admin-view-barbeiros" class="admin-subview hidden">
+                <div class="form-container-admin">
+                    <h3>Adicionar Profissional</h3>
+                    <div class="form-grid-mini">
+                        <input type="text" id="adm-b-nome" placeholder="Nome do Barbeiro">
+                        <input type="text" id="adm-b-especialidade" placeholder="Especialidade">
+                        <button onclick="adminCadastrarBarbeiro()" class="btn-primary-mini">Cadastrar Barbeiro</button>
+                    </div>
+                </div>
+                <ul id="lista-barbeiros" class="equipe-lista"></ul>
+            </div>
+        </section>
+
+        <section class="card" id="section-agendamento">
+            <h2><i class="fa-solid fa-calendar-plus"></i> Novo Agendamento</h2>
+            <form id="agendamento-form">
+                <div class="input-group"><label>Data</label><input type="date" id="data-agendamento" required></div>
+                
+                <div class="input-group">
+                    <label>Barbeiro</label>
+                    <select id="escolha-barbeiro" required>
+                        <option value="">Selecione um profissional</option>
+                    </select>
+                </div>
+
+                <div class="input-group"><label>Horário</label><select id="horario" required></select></div>
+                
+                <div class="input-group">
+                    <label>Escolha os Serviços</label>
+                    <div id="servicos-lista" class="servicos-grid"></div>
+                </div>
+                
+                <div class="input-group"><label>Produto Extra</label><select id="produto"></select></div>
+                <button type="submit" class="btn-primary">Confirmar Agendamento</button>
+            </form>
+        </section>
+
+        <section class="card" id="section-meus-agendamentos">
+            <h2><i class="fa-solid fa-list-check"></i> Meus Horários</h2>
+            <ul id="lista-cliente" class="atendimento-lista"></ul>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
