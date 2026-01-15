@@ -1,4 +1,4 @@
-# 💈 Barbearia do Fagner - Sistema de Gestão Premium
+# 💈 Barbearia do Fagner - Sistema de Gestão 
 
 Sistema completo de agendamento e gestão para barbearias, desenvolvido com foco em experiência do usuário (UX) e inteligência de negócio (BI).
 
